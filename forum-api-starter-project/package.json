@@ -6,11 +6,11 @@
   "scripts": {
     "start": "node src/app.js",
     "start:dev": "nodemon src/app.js",
-    "test": "jest --setupFiles dotenv/config -i",
-    "test:watch:change": "jest --watch --setupFiles dotenv/config -i",
-    "test:watch": "jest --watchAll --coverage --setupFiles dotenv/config -i",
+    "test": "jest --setupFiles ./src/Commons/setupEnv.js -i",
+    "test:watch:change": "jest --watch --setupFiles ./src/Commons/setupEnv.js-i",
+    "test:watch": "jest --watchAll --coverage --setupFiles ./src/Commons/setupEnv.js -i",
     "migrate": "node-pg-migrate",
-    "migrate:test": "node-pg-migrate -f config/database/test.json"
+    "migrate:test": "node-pg-migrate --env-path .env.test"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +22,7 @@
     "dotenv": "^10.0.0",
     "instances-container": "^2.0.3",
     "nanoid": "^3.1.23",
+    "path": "^0.12.7",
     "pg": "^8.6.0"
   },
   "devDependencies": {

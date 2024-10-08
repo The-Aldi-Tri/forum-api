@@ -1,0 +1,38 @@
+name: FORUM-API
+services:
+  devcontainer:
+    image: node:14.17.0-buster
+    volumes:
+      - ..:/workspaces:cached
+    command: sleep infinity
+    networks:
+      - forum-api-network
+
+  postgres:
+    image: postgres:16.4
+    restart: unless-stopped
+    env_file: ../forum-api-starter-project/.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - forum-api-network
+
+  postgres-test:
+    image: postgres:16.4
+    restart: unless-stopped
+    env_file: ../forum-api-starter-project/.env.test
+    volumes:
+      - pgdatatest:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    networks:
+      - forum-api-network
+
+volumes:
+  pgdata:
+  pgdatatest:
+
+networks:
+  forum-api-network:

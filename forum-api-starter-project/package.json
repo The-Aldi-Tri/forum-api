@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node src/app.js",
     "start:dev": "nodemon src/app.js",
-    "test": "jest --setupFiles ./src/Commons/setupEnv.js -i",
-    "test:watch:change": "jest --watch --setupFiles ./src/Commons/setupEnv.js-i",
+    "test": "jest --coverage --setupFiles ./src/Commons/setupEnv.js -i",
+    "test:watch:change": "jest --watch --setupFiles ./src/Commons/setupEnv.js -i",
     "test:watch": "jest --watchAll --coverage --setupFiles ./src/Commons/setupEnv.js -i",
     "migrate": "node-pg-migrate",
     "migrate:test": "node-pg-migrate --env-path .env.test"
@@ -17,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^20.1.5",
-    "@hapi/jwt": "^2.0.1",
+    "@hapi/jwt": "^2.2.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "instances-container": "^2.0.3",

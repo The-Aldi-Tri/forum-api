@@ -771,7 +771,7 @@ class GetEngineUseCase {
 }
 ```
 
-### 3. Ketika melakukan integration test yang bersifat perubahan (insert, update, atau delete), pastikan database atau external agency lainnya juga berubah
+### 4. Ketika melakukan integration test yang bersifat perubahan (insert, update, atau delete), pastikan database atau external agency lainnya juga berubah
 
 Kode di bawah ini adalah kode yang tidak menerapkan testing terhadap external agency. Perhatikanlah contoh berikut
 

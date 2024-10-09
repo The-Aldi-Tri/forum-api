@@ -114,4 +114,32 @@ describe("ThreadRepositoryPostgres", () => {
       ).resolves.not.toThrowError(NotFoundError);
     });
   });
+
+  describe("getThreadById function", () => {
+    it("should return thread correctly", async () => {
+      // Arrange
+      await ThreadsTableTestHelper.addThread({
+        id: "thread-123",
+        title: "judul",
+        body: "isi",
+        owner: "user-123",
+      });
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action
+      const thread = await threadRepositoryPostgres.getThreadById("thread-123");
+
+      // Assert
+      expect(thread).toHaveProperty("id", "thread-123");
+      expect(thread).toHaveProperty("title", "judul");
+      expect(thread).toHaveProperty("body", "isi");
+      expect(thread).toHaveProperty("date");
+      expect(thread).toHaveProperty("username", "dicoding");
+    });
+  });
 });

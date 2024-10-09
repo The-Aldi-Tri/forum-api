@@ -195,8 +195,59 @@ describe("CommentRepositoryPostgres", () => {
 
       // Assert
       const result = await CommentsTableTestHelper.findCommentById(commentId);
-      expect(result[0]).toHaveProperty("content", "**komentar telah dihapus**");
       expect(result[0]).toHaveProperty("is_deleted", true);
+    });
+  });
+
+  describe("getCommentsByThreadId function", () => {
+    it("should return comments correctly", async () => {
+      // Arrange
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+        thread_id: "thread-123",
+        content: "isi komen",
+        owner: "user-123",
+      });
+
+      await CommentsTableTestHelper.addComment({
+        id: "comment-1234",
+        thread_id: "thread-123",
+        content: "isi komen",
+        owner: "user-123",
+      });
+
+      await CommentsTableTestHelper.markDeleted("comment-1234");
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action
+      const comments = await commentRepositoryPostgres.getCommentsByThreadId(
+        "thread-123"
+      );
+
+      // Assert
+      expect(comments).toHaveLength(2);
+
+      expect(comments[0]).toHaveProperty("id", "comment-123");
+      expect(comments[0]).toHaveProperty("username", "dicoding");
+      expect(comments[0]).toHaveProperty("date");
+      expect(comments[0]).toHaveProperty("content", "isi komen");
+
+      expect(comments[1]).toHaveProperty("id", "comment-1234");
+      expect(comments[1]).toHaveProperty("username", "dicoding");
+      expect(comments[1]).toHaveProperty("date");
+      expect(comments[1]).toHaveProperty(
+        "content",
+        "**komentar telah dihapus**"
+      );
+
+      expect(new Date(comments[0].date).getTime()).toBeLessThanOrEqual(
+        new Date(comments[1].date).getTime()
+      );
     });
   });
 });

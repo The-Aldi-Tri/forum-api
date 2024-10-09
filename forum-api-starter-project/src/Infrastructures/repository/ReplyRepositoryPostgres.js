@@ -1,5 +1,6 @@
 const ReplyRepository = require("../../Domains/replies/ReplyRepository");
 const AddedReply = require("../../Domains/replies/entities/AddedReply");
+const ReplyDetails = require("../../Domains/replies/entities/ReplyDetails");
 
 const NotFoundError = require("../../Commons/exceptions/NotFoundError");
 const AuthorizationError = require("../../Commons/exceptions/AuthorizationError");
@@ -58,6 +59,23 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     };
 
     await this._pool.query(query);
+  }
+
+  async getRepliesByCommentId(commentId) {
+    const query = {
+      text: "SELECT replies.id, users.username, replies.date, replies.content, replies.is_deleted FROM replies JOIN users ON replies.owner = users.id WHERE replies.comment_id = $1 ORDER BY replies.date ASC",
+      values: [commentId],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows.map((reply) => {
+      if (reply.is_deleted) {
+        reply.content = "**balasan telah dihapus**";
+      }
+      delete reply.is_deleted;
+      return new ReplyDetails(reply);
+    });
   }
 }
 

@@ -2,6 +2,7 @@ const pool = require("../../database/postgres/pool");
 
 const NewComment = require("../../../Domains/comments/entities/NewComment");
 const AddedComment = require("../../../Domains/comments/entities/AddedComment");
+const CommentDetails = require("../../../Domains/comments/entities/CommentDetails");
 const CommentRepositoryPostgres = require("../CommentRepositoryPostgres");
 
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
@@ -231,6 +232,7 @@ describe("CommentRepositoryPostgres", () => {
 
       // Assert
       expect(comments).toHaveLength(2);
+      comments.map((comment) => expect(comment).toBeInstanceOf(CommentDetails));
 
       expect(comments[0]).toHaveProperty("id", "comment-123");
       expect(comments[0]).toHaveProperty("username", "dicoding");

@@ -2,6 +2,7 @@ const pool = require("../../database/postgres/pool");
 
 const NewReply = require("../../../Domains/replies/entities/NewReply");
 const AddedReply = require("../../../Domains/replies/entities/AddedReply");
+const ReplyDetails = require("../../../Domains/replies/entities/ReplyDetails");
 const ReplyRepositoryPostgres = require("../ReplyRepositoryPostgres");
 
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
@@ -201,6 +202,56 @@ describe("ReplyRepositoryPostgres", () => {
       // Assert
       const result = await RepliesTableTestHelper.findReplyById(replyId);
       expect(result[0]).toHaveProperty("is_deleted", true);
+    });
+  });
+
+  describe("getRepliesByCommentId function", () => {
+    it("should return replies correctly", async () => {
+      // Arrange
+      await RepliesTableTestHelper.addReply({
+        id: "reply-123",
+        comment_id: "comment-123",
+        content: "isi reply 1",
+        owner: "user-123",
+      });
+
+      await RepliesTableTestHelper.addReply({
+        id: "reply-1234",
+        comment_id: "comment-123",
+        content: "isi reply 2",
+        owner: "user-123",
+      });
+
+      await RepliesTableTestHelper.markDeleted("reply-1234");
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action
+      const replies = await replyRepositoryPostgres.getRepliesByCommentId(
+        "comment-123"
+      );
+
+      // Assert
+      expect(replies).toHaveLength(2);
+      replies.map((reply) => expect(reply).toBeInstanceOf(ReplyDetails));
+
+      expect(replies[0]).toHaveProperty("id", "reply-123");
+      expect(replies[0]).toHaveProperty("username", "dicoding");
+      expect(replies[0]).toHaveProperty("date");
+      expect(replies[0]).toHaveProperty("content", "isi reply 1");
+
+      expect(replies[1]).toHaveProperty("id", "reply-1234");
+      expect(replies[1]).toHaveProperty("username", "dicoding");
+      expect(replies[1]).toHaveProperty("date");
+      expect(replies[1]).toHaveProperty("content", "**balasan telah dihapus**");
+
+      expect(replies[0].date.getTime()).toBeLessThanOrEqual(
+        replies[1].date.getTime()
+      );
     });
   });
 });

@@ -144,6 +144,12 @@ describe("/threads endpoint", () => {
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual("success");
       expect(responseJson.data.thread).toBeDefined();
+      expect(responseJson.data.thread).toHaveProperty("id");
+      expect(responseJson.data.thread).toHaveProperty("title");
+      expect(responseJson.data.thread).toHaveProperty("body");
+      expect(responseJson.data.thread).toHaveProperty("date");
+      expect(responseJson.data.thread).toHaveProperty("username");
+      expect(responseJson.data.thread).toHaveProperty("comments");
     });
 
     it("should response 404 when thread not found", async () => {

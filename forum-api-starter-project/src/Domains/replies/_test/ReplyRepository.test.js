@@ -18,5 +18,8 @@ describe("ThreadRepository interface", () => {
     await expect(replyRepository.deleteReplyById("")).rejects.toThrowError(
       "REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED"
     );
+    await expect(
+      replyRepository.getRepliesByCommentId("")
+    ).rejects.toThrowError("REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   });
 });

@@ -56,10 +56,10 @@ const createServer = async (container) => {
       plugin: comments,
       options: { container },
     },
-    // {
-    //   plugin: replies,
-    //   options: { container },
-    // },
+    {
+      plugin: replies,
+      options: { container },
+    },
   ]);
 
   server.ext("onPreResponse", (request, h) => {

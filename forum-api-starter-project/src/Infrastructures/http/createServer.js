@@ -52,10 +52,10 @@ const createServer = async (container) => {
       plugin: threads,
       options: { container },
     },
-    // {
-    //   plugin: comments,
-    //   options: { container },
-    // },
+    {
+      plugin: comments,
+      options: { container },
+    },
     // {
     //   plugin: replies,
     //   options: { container },

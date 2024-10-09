@@ -1,11 +1,13 @@
 const pool = require("../../database/postgres/pool");
 
-const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
-
-const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper");
 const NewThread = require("../../../Domains/threads/entities/NewThread");
 const AddedThread = require("../../../Domains/threads/entities/AddedThread");
 const ThreadRepositoryPostgres = require("../ThreadRepositoryPostgres");
+
+const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
+const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper");
+
+const NotFoundError = require("../../../Commons/exceptions/NotFoundError");
 
 describe("ThreadRepositoryPostgres", () => {
   beforeEach(async () => {
@@ -72,6 +74,44 @@ describe("ThreadRepositoryPostgres", () => {
           owner: "user-123",
         })
       );
+    });
+  });
+
+  describe("verifyThreadExist function", () => {
+    it("should throw NotFoundError when thread is not exist", async () => {
+      // Arrange
+      const thread_id = "must be not found";
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action & Assert
+      await expect(
+        threadRepositoryPostgres.verifyThreadExist(thread_id)
+      ).rejects.toThrowError(NotFoundError);
+    });
+    it("should not throw NotFoundError when thread is exist", async () => {
+      // Arrange
+      await ThreadsTableTestHelper.addThread({
+        id: "thread-123",
+        title: "judul",
+        body: "isi",
+        owner: "user-123",
+      });
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action & Assert
+      await expect(
+        threadRepositoryPostgres.verifyThreadExist("thread-123")
+      ).resolves.not.toThrowError(NotFoundError);
     });
   });
 });

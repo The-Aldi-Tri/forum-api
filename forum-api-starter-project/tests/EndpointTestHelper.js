@@ -1,9 +1,9 @@
 /* istanbul ignore file */
-const createServer = require("../src/Infrastructures/http/createServer");
-const container = require("../src/Infrastructures/container");
+const createServer = require('../src/Infrastructures/http/createServer');
+const container = require('../src/Infrastructures/container');
 
-const UsersTableTestHelper = require("./UsersTableTestHelper");
-const AuthenticationsTableTestHelper = require("./AuthenticationsTableTestHelper");
+const UsersTableTestHelper = require('./UsersTableTestHelper');
+const AuthenticationsTableTestHelper = require('./AuthenticationsTableTestHelper');
 
 const CreateServerTestHelper = {
   async getAccessTokenAndUserIdHelper() {
@@ -17,14 +17,14 @@ const CreateServerTestHelper = {
     };
 
     const responseUser = await server.inject({
-      method: "POST",
-      url: "/users",
+      method: 'POST',
+      url: '/users',
       payload: userPayload,
     });
 
     const responseAuth = await server.inject({
-      method: "POST",
-      url: "/authentications",
+      method: 'POST',
+      url: '/authentications',
       payload: {
         username: userPayload.username,
         password: userPayload.password,

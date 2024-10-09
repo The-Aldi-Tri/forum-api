@@ -1,9 +1,9 @@
-const ReplyRepository = require("../../Domains/replies/ReplyRepository");
-const AddedReply = require("../../Domains/replies/entities/AddedReply");
-const ReplyDetails = require("../../Domains/replies/entities/ReplyDetails");
+const ReplyRepository = require('../../Domains/replies/ReplyRepository');
+const AddedReply = require('../../Domains/replies/entities/AddedReply');
+const ReplyDetails = require('../../Domains/replies/entities/ReplyDetails');
 
-const NotFoundError = require("../../Commons/exceptions/NotFoundError");
-const AuthorizationError = require("../../Commons/exceptions/AuthorizationError");
+const NotFoundError = require('../../Commons/exceptions/NotFoundError');
+const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 
 class ReplyRepositoryPostgres extends ReplyRepository {
   constructor(pool, idGenerator) {
@@ -17,7 +17,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     const id = `reply-${this._idGenerator()}`;
 
     const query = {
-      text: "INSERT INTO replies (id, content, comment_id, owner) VALUES($1, $2, $3, $4) RETURNING id, content, owner",
+      text: 'INSERT INTO replies (id, content, comment_id, owner) VALUES($1, $2, $3, $4) RETURNING id, content, owner',
       values: [id, content, commentId, owner],
     };
 
@@ -28,33 +28,33 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
   async verifyReplyExist(replyId) {
     const query = {
-      text: "SELECT 1 FROM replies WHERE id = $1",
+      text: 'SELECT 1 FROM replies WHERE id = $1',
       values: [replyId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError("Reply tidak ditemukan");
+      throw new NotFoundError('Reply tidak ditemukan');
     }
   }
 
   async verifyReplyOwner({ replyId, userId }) {
     const query = {
-      text: "SELECT 1 FROM replies WHERE id = $1 AND owner = $2",
+      text: 'SELECT 1 FROM replies WHERE id = $1 AND owner = $2',
       values: [replyId, userId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new AuthorizationError("Anda tidak berhak menghapus reply ini");
+      throw new AuthorizationError('Anda tidak berhak menghapus reply ini');
     }
   }
 
   async deleteReplyById(replyId) {
     const query = {
-      text: "UPDATE replies SET is_deleted = true WHERE id=$1",
+      text: 'UPDATE replies SET is_deleted = true WHERE id=$1',
       values: [replyId],
     };
 
@@ -63,18 +63,19 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
   async getRepliesByCommentId(commentId) {
     const query = {
-      text: "SELECT replies.id, users.username, replies.date, replies.content, replies.is_deleted FROM replies JOIN users ON replies.owner = users.id WHERE replies.comment_id = $1 ORDER BY replies.date ASC",
+      text: 'SELECT replies.id, users.username, replies.date, replies.content, replies.is_deleted FROM replies JOIN users ON replies.owner = users.id WHERE replies.comment_id = $1 ORDER BY replies.date ASC',
       values: [commentId],
     };
 
     const result = await this._pool.query(query);
 
     return result.rows.map((reply) => {
+      const modifiedReply = { ...reply };
       if (reply.is_deleted) {
-        reply.content = "**balasan telah dihapus**";
+        modifiedReply.content = '**balasan telah dihapus**';
       }
-      delete reply.is_deleted;
-      return new ReplyDetails(reply);
+      delete modifiedReply.is_deleted;
+      return new ReplyDetails(modifiedReply);
     });
   }
 }

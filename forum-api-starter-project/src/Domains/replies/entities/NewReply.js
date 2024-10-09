@@ -11,15 +11,15 @@ class NewReply {
 
   _verifyPayload({ commentId, content, owner }) {
     if (!commentId || !content || !owner) {
-      throw new Error("NEW_REPLY.NOT_CONTAIN_NEEDED_PROPERTY");
+      throw new Error('NEW_REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (
-      typeof commentId !== "string" ||
-      typeof content !== "string" ||
-      typeof owner !== "string"
+      typeof commentId !== 'string'
+      || typeof content !== 'string'
+      || typeof owner !== 'string'
     ) {
-      throw new Error("NEW_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION");
+      throw new Error('NEW_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }

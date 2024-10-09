@@ -1,5 +1,5 @@
-const AddThreadUseCase = require("../../../../Applications/use_case/AddThreadUseCase");
-const GetThreadUseCase = require("../../../../Applications/use_case/GetThreadUseCase");
+const AddThreadUseCase = require('../../../../Applications/use_case/AddThreadUseCase');
+const GetThreadUseCase = require('../../../../Applications/use_case/GetThreadUseCase');
 
 class ThreadsHandler {
   constructor(container) {
@@ -17,7 +17,7 @@ class ThreadsHandler {
     const addedThread = await addThreadUseCase.execute({ title, body, owner });
 
     const response = h.response({
-      status: "success",
+      status: 'success',
       data: {
         addedThread,
       },
@@ -33,7 +33,7 @@ class ThreadsHandler {
     const thread = await getThreadUseCase.execute(threadId);
 
     const response = h.response({
-      status: "success",
+      status: 'success',
       data: {
         thread,
       },

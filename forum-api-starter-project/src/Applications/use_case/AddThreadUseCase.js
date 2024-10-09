@@ -1,5 +1,5 @@
-const NewThread = require("../../Domains/threads/entities/NewThread");
-const AddedThread = require("../../Domains/threads/entities/AddedThread");
+const NewThread = require('../../Domains/threads/entities/NewThread');
+const AddedThread = require('../../Domains/threads/entities/AddedThread');
 
 class AddThreadUseCase {
   constructor({ threadRepository }) {

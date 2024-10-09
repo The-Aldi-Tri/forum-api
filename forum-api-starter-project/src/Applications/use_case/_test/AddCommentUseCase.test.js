@@ -1,23 +1,23 @@
-const NewComment = require("../../../Domains/comments/entities/NewComment");
-const AddedComment = require("../../../Domains/comments/entities/AddedComment");
-const CommentRepository = require("../../../Domains/comments/CommentRepository");
-const ThreadRepository = require("../../../Domains/threads/ThreadRepository");
-const AddCommentUseCase = require("../AddCommentUseCase");
+const NewComment = require('../../../Domains/comments/entities/NewComment');
+const AddedComment = require('../../../Domains/comments/entities/AddedComment');
+const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
+const AddCommentUseCase = require('../AddCommentUseCase');
 
-describe("AddCommentUseCase", () => {
+describe('AddCommentUseCase', () => {
   /**
    * Menguji apakah use case mampu mengorkestrasikan langkah demi langkah dengan benar.
    */
-  it("should orchestrating the add comment action correctly", async () => {
+  it('should orchestrating the add comment action correctly', async () => {
     // Arrange
     const useCasePayload = {
-      thread_id: "thread-123",
-      content: "isi komen",
-      owner: "user-123",
+      threadId: 'thread-123',
+      content: 'isi komen',
+      owner: 'user-123',
     };
 
     const mockAddedComment = new AddedComment({
-      id: "comment-123",
+      id: 'comment-123',
       content: useCasePayload.content,
       owner: useCasePayload.owner,
     });
@@ -46,10 +46,10 @@ describe("AddCommentUseCase", () => {
     // Assert
     expect(addedComment).toStrictEqual(mockAddedComment);
     expect(mockThreadRepository.verifyThreadExist).toBeCalledWith(
-      useCasePayload.thread_id
+      useCasePayload.threadId,
     );
     expect(mockCommentRepository.addComment).toBeCalledWith(
-      new NewComment(useCasePayload)
+      new NewComment(useCasePayload),
     );
   });
 });

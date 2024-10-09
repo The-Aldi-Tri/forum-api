@@ -10,7 +10,9 @@
     "test:watch:change": "jest --watch --setupFiles ./src/Commons/setupEnv.js -i",
     "test:watch": "jest --watchAll --coverage --setupFiles ./src/Commons/setupEnv.js -i",
     "migrate": "node-pg-migrate",
-    "migrate:test": "node-pg-migrate --env-path .env.test"
+    "migrate:test": "node-pg-migrate --env-path .env.test",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix"
   },
   "keywords": [],
   "author": "",

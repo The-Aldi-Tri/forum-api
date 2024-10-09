@@ -1,5 +1,6 @@
-const AddReplyUseCase = require("../../../../Applications/use_case/AddReplyUseCase");
-const DeleteReplyUseCase = require("../../../../Applications/use_case/DeleteReplyUseCase");
+const AddReplyUseCase = require('../../../../Applications/use_case/AddReplyUseCase');
+const DeleteReplyUseCase = require('../../../../Applications/use_case/DeleteReplyUseCase');
+
 class RepliesHandler {
   constructor(container) {
     this._container = container;
@@ -22,7 +23,7 @@ class RepliesHandler {
     });
 
     const response = h.response({
-      status: "success",
+      status: 'success',
       data: {
         addedReply,
       },
@@ -36,7 +37,7 @@ class RepliesHandler {
     const { id: userId } = request.auth.credentials;
 
     const deleteReplyUseCase = this._container.getInstance(
-      DeleteReplyUseCase.name
+      DeleteReplyUseCase.name,
     );
     await deleteReplyUseCase.execute({
       threadId,
@@ -46,7 +47,7 @@ class RepliesHandler {
     });
 
     const response = h.response({
-      status: "success",
+      status: 'success',
     });
     response.code(200);
     return response;

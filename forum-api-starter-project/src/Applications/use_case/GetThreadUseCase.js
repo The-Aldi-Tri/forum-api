@@ -8,18 +8,19 @@ class GetThreadUseCaseUseCase {
   async execute(useCasePayload) {
     await this._threadRepository.verifyThreadExist(useCasePayload);
     const threadInfo = await this._threadRepository.getThreadById(
-      useCasePayload
+      useCasePayload,
     );
     const comments = await this._commentRepository.getCommentsByThreadId(
-      useCasePayload
+      useCasePayload,
     );
     const commentsWithReplies = await Promise.all(
       comments.map(async (comment) => {
-        comment.replies = await this._replyRepository.getRepliesByCommentId(
-          comment.id
+        const modifiedComment = { ...comment };
+        modifiedComment.replies = await this._replyRepository.getRepliesByCommentId(
+          comment.id,
         );
-        return comment;
-      })
+        return modifiedComment;
+      }),
     );
     return { ...threadInfo, comments: commentsWithReplies };
   }

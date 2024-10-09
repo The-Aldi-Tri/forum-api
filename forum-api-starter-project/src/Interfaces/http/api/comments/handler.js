@@ -1,5 +1,5 @@
-const AddCommentUseCase = require("../../../../Applications/use_case/AddCommentUseCase");
-const DeleteCommentUseCase = require("../../../../Applications/use_case/DeleteCommentUseCase");
+const AddCommentUseCase = require('../../../../Applications/use_case/AddCommentUseCase');
+const DeleteCommentUseCase = require('../../../../Applications/use_case/DeleteCommentUseCase');
 
 class CommentsHandler {
   constructor(container) {
@@ -10,21 +10,21 @@ class CommentsHandler {
   }
 
   async postCommentHandler(request, h) {
-    const { threadId: thread_id } = request.params;
+    const { threadId } = request.params;
     const { content } = request.payload;
     const { id: owner } = request.auth.credentials;
 
     const addCommentUseCase = this._container.getInstance(
-      AddCommentUseCase.name
+      AddCommentUseCase.name,
     );
     const addedComment = await addCommentUseCase.execute({
-      thread_id,
+      threadId,
       content,
       owner,
     });
 
     const response = h.response({
-      status: "success",
+      status: 'success',
       data: {
         addedComment,
       },
@@ -38,7 +38,7 @@ class CommentsHandler {
     const { id: userId } = request.auth.credentials;
 
     const deleteCommentUseCase = this._container.getInstance(
-      DeleteCommentUseCase.name
+      DeleteCommentUseCase.name,
     );
     await deleteCommentUseCase.execute({
       commentId,
@@ -47,7 +47,7 @@ class CommentsHandler {
     });
 
     const response = h.response({
-      status: "success",
+      status: 'success',
     });
     response.code(200);
     return response;

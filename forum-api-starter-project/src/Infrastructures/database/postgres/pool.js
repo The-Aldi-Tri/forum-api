@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-const { Pool } = require("pg");
+const { Pool } = require('pg');
 
 const pool = new Pool();
 

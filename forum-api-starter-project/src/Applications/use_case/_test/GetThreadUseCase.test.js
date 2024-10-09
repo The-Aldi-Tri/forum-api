@@ -1,15 +1,15 @@
-const CommentRepository = require("../../../Domains/comments/CommentRepository");
-const ThreadRepository = require("../../../Domains/threads/ThreadRepository");
-const ReplyRepository = require("../../../Domains/replies/ReplyRepository");
-const GetThreadUseCase = require("../GetThreadUseCase");
+const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
+const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
+const GetThreadUseCase = require('../GetThreadUseCase');
 
-describe("GetThreadUseCase", () => {
+describe('GetThreadUseCase', () => {
   /**
    * Menguji apakah use case mampu mengorkestrasikan langkah demi langkah dengan benar.
    */
-  it("should orchestrating the get thread action correctly", async () => {
+  it('should orchestrating the get thread action correctly', async () => {
     // Arrange
-    const useCasePayload = "thread-123";
+    const useCasePayload = 'thread-123';
 
     /** creating dependency of use case */
     const mockCommentRepository = new CommentRepository();
@@ -25,7 +25,7 @@ describe("GetThreadUseCase", () => {
       .mockImplementation(() => Promise.resolve({}));
     mockCommentRepository.getCommentsByThreadId = jest
       .fn()
-      .mockImplementation(() => Promise.resolve([{ id: "comment-123" }]));
+      .mockImplementation(() => Promise.resolve([{ id: 'comment-123' }]));
     mockReplyRepository.getRepliesByCommentId = jest
       .fn()
       .mockImplementation(() => Promise.resolve([]));
@@ -42,14 +42,14 @@ describe("GetThreadUseCase", () => {
 
     // Assert
     expect(mockThreadRepository.verifyThreadExist).toBeCalledWith(
-      useCasePayload
+      useCasePayload,
     );
     expect(mockThreadRepository.getThreadById).toBeCalledWith(useCasePayload);
     expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(
-      useCasePayload
+      useCasePayload,
     );
     expect(mockReplyRepository.getRepliesByCommentId).toBeCalledWith(
-      "comment-123"
+      'comment-123',
     );
   });
 });

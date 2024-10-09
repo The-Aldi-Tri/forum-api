@@ -8,6 +8,9 @@ const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper");
 const CommentsTableTestHelper = require("../../../../tests/CommentsTableTestHelper");
 
+const NotFoundError = require("../../../Commons/exceptions/NotFoundError");
+const AuthorizationError = require("../../../Commons/exceptions/AuthorizationError");
+
 describe("CommentRepositoryPostgres", () => {
   beforeEach(async () => {
     await UsersTableTestHelper.addUser({
@@ -25,6 +28,7 @@ describe("CommentRepositoryPostgres", () => {
   });
 
   afterEach(async () => {
+    await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
   });
@@ -84,6 +88,115 @@ describe("CommentRepositoryPostgres", () => {
           owner: "user-123",
         })
       );
+    });
+  });
+
+  describe("verifyCommentExist function", () => {
+    it("should throw NotFoundError when comment is not exist", async () => {
+      // Arrange
+      const commentId = "must be not found";
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action & Assert
+      await expect(
+        commentRepositoryPostgres.verifyCommentExist(commentId)
+      ).rejects.toThrowError(NotFoundError);
+    });
+
+    it("should not throw NotFoundError when comment is exist", async () => {
+      // Arrange
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+        thread_id: "thread-123",
+        content: "isi komen",
+        owner: "user-123",
+      });
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action & Assert
+      await expect(
+        commentRepositoryPostgres.verifyCommentExist("comment-123")
+      ).resolves.not.toThrowError(NotFoundError);
+    });
+  });
+
+  describe("verifyCommentOwner function", () => {
+    it("should throw AuthorizationError when record with commentId and userId is not exist", async () => {
+      // Arrange
+      const commentId = "must be not found";
+      const userId = "lost people";
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action & Assert
+      await expect(
+        commentRepositoryPostgres.verifyCommentOwner({ commentId, userId })
+      ).rejects.toThrowError(AuthorizationError);
+    });
+
+    it("should not throw AuthorizationError when record with commentId and userId is exist", async () => {
+      // Arrange
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+        thread_id: "thread-123",
+        content: "isi komen",
+        owner: "user-123",
+      });
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action & Assert
+      await expect(
+        commentRepositoryPostgres.verifyCommentOwner({
+          commentId: "comment-123",
+          userId: "user-123",
+        })
+      ).resolves.not.toThrowError(AuthorizationError);
+    });
+  });
+
+  describe("deleteCommentById function", () => {
+    it("should delete comment correctly", async () => {
+      // Arrange
+      const commentId = "comment-123";
+      await CommentsTableTestHelper.addComment({
+        id: commentId,
+        thread_id: "thread-123",
+        content: "isi komen",
+        owner: "user-123",
+      });
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action
+      await commentRepositoryPostgres.deleteCommentById(commentId);
+
+      // Assert
+      const result = await CommentsTableTestHelper.findCommentById(commentId);
+      expect(result[0]).toHaveProperty("content", "**komentar telah dihapus**");
+      expect(result[0]).toHaveProperty("is_deleted", true);
     });
   });
 });

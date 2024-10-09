@@ -29,7 +29,7 @@
 {
   "dockerComposeFile": "docker-compose.yml",
   "service": "devcontainer",
-  "workspaceFolder": "/workspaces/forum-api-starter-project",
+  "workspaceFolder": "/workspaces/forum-api",
   "customizations": {
     "vscode": {
       "extensions": [

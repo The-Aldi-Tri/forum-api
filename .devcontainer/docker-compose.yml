@@ -11,7 +11,7 @@ services:
   postgres:
     image: postgres:16.4
     restart: unless-stopped
-    env_file: ../forum-api-starter-project/.env
+    env_file: ../forum-api/.env
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -22,7 +22,7 @@ services:
   postgres-test:
     image: postgres:16.4
     restart: unless-stopped
-    env_file: ../forum-api-starter-project/.env.test
+    env_file: ../forum-api/.env.test
     volumes:
       - pgdatatest:/var/lib/postgresql/data
     ports:

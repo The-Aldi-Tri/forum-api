@@ -245,8 +245,8 @@ describe("CommentRepositoryPostgres", () => {
         "**komentar telah dihapus**"
       );
 
-      expect(new Date(comments[0].date).getTime()).toBeLessThanOrEqual(
-        new Date(comments[1].date).getTime()
+      expect(comments[0].date.getTime()).toBeLessThanOrEqual(
+        comments[1].date.getTime()
       );
     });
   });

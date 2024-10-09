@@ -1,5 +1,6 @@
 const CommentRepository = require("../../Domains/comments/CommentRepository");
 const AddedComment = require("../../Domains/comments/entities/AddedComment");
+const CommentDetails = require("../../Domains/comments/entities/CommentDetails");
 
 const NotFoundError = require("../../Commons/exceptions/NotFoundError");
 const AuthorizationError = require("../../Commons/exceptions/AuthorizationError");
@@ -73,7 +74,7 @@ class CommentRepositoryPostgres extends CommentRepository {
         comment.content = "**komentar telah dihapus**";
       }
       delete comment.is_deleted;
-      return comment;
+      return new CommentDetails(comment);
     });
   }
 }

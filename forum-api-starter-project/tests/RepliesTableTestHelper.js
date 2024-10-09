@@ -10,7 +10,7 @@ const RepliesTableTestHelper = {
   }) {
     const query = {
       text: "INSERT INTO replies (id, content, comment_id, owner) VALUES($1, $2, $3, $4)",
-      values: [id, comment_id, content, owner],
+      values: [id, content, comment_id, owner],
     };
 
     await pool.query(query);

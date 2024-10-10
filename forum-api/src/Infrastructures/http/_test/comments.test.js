@@ -14,7 +14,6 @@ describe('/threads/{threadId}/comments endpoint', () => {
 
   beforeEach(async () => {
     const data = await EndpointTestHelper.getAccessTokenAndUserIdHelper();
-
     accessToken = data.accessToken;
     userId = data.userId;
 
@@ -58,6 +57,9 @@ describe('/threads/{threadId}/comments endpoint', () => {
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.addedComment).toBeDefined();
+      expect(responseJson.data.addedComment).toHaveProperty('id');
+      expect(responseJson.data.addedComment).toHaveProperty('content');
+      expect(responseJson.data.addedComment).toHaveProperty('owner');
     });
 
     it('should response 400 when request payload not contain needed property', async () => {

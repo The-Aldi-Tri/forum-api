@@ -1,9 +1,7 @@
 const pool = require('../../database/postgres/pool');
 
-const NewComment = require('../../../Domains/comments/entities/NewComment');
-const AddedComment = require('../../../Domains/comments/entities/AddedComment');
-const CommentDetails = require('../../../Domains/comments/entities/CommentDetails');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
+const NewComment = require('../../../Domains/comments/entities/NewComment');
 
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
@@ -65,11 +63,11 @@ describe('CommentRepositoryPostgres', () => {
 
     it('should return added comment correctly', async () => {
       // Arrange
-      const newComment = new NewComment({
+      const newComment = {
         threadId: 'thread-123',
         content: 'isi komen',
         owner: 'user-123',
-      });
+      };
       const fakeIdGenerator = () => '123'; // stub!
       const commentRepositoryPostgres = new CommentRepositoryPostgres(
         pool,
@@ -83,11 +81,11 @@ describe('CommentRepositoryPostgres', () => {
 
       // Assert
       expect(addedComment).toStrictEqual(
-        new AddedComment({
+        {
           id: 'comment-123',
           content: 'isi komen',
           owner: 'user-123',
-        }),
+        },
       );
     });
   });
@@ -206,14 +204,14 @@ describe('CommentRepositoryPostgres', () => {
       await CommentsTableTestHelper.addComment({
         id: 'comment-123',
         thread_id: 'thread-123',
-        content: 'isi komen',
+        content: 'isi komen 1',
         owner: 'user-123',
       });
 
       await CommentsTableTestHelper.addComment({
         id: 'comment-1234',
         thread_id: 'thread-123',
-        content: 'isi komen',
+        content: 'isi komen 2',
         owner: 'user-123',
       });
 
@@ -232,20 +230,18 @@ describe('CommentRepositoryPostgres', () => {
 
       // Assert
       expect(comments).toHaveLength(2);
-      comments.map((comment) => expect(comment).toBeInstanceOf(CommentDetails));
 
       expect(comments[0]).toHaveProperty('id', 'comment-123');
       expect(comments[0]).toHaveProperty('username', 'dicoding');
       expect(comments[0]).toHaveProperty('date');
-      expect(comments[0]).toHaveProperty('content', 'isi komen');
+      expect(comments[0]).toHaveProperty('content', 'isi komen 1');
+      expect(comments[0]).toHaveProperty('is_deleted', false);
 
       expect(comments[1]).toHaveProperty('id', 'comment-1234');
       expect(comments[1]).toHaveProperty('username', 'dicoding');
       expect(comments[1]).toHaveProperty('date');
-      expect(comments[1]).toHaveProperty(
-        'content',
-        '**komentar telah dihapus**',
-      );
+      expect(comments[1]).toHaveProperty('content', 'isi komen 2');
+      expect(comments[1]).toHaveProperty('is_deleted', true);
 
       expect(comments[0].date.getTime()).toBeLessThanOrEqual(
         comments[1].date.getTime(),

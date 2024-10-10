@@ -18,12 +18,6 @@ describe('AddReplyUseCase', () => {
       owner: 'user-123',
     };
 
-    const mockNewReply = new NewReply({
-      commentId: 'comment-123',
-      content: 'isi komen',
-      owner: 'user-123',
-    });
-
     const mockAddedReply = new AddedReply({
       id: 'comment-123',
       content: useCasePayload.content,
@@ -38,13 +32,19 @@ describe('AddReplyUseCase', () => {
     /** mocking needed function */
     mockThreadRepository.verifyThreadExist = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(1));
+      .mockImplementation(() => Promise.resolve());
+
     mockCommentRepository.verifyCommentExist = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(1));
+      .mockImplementation(() => Promise.resolve());
+
     mockReplyRepository.addReply = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(mockAddedReply));
+      .mockImplementation(() => Promise.resolve(new AddedReply({
+        id: 'comment-123',
+        content: useCasePayload.content,
+        owner: useCasePayload.owner,
+      })));
 
     /** creating use case instance */
     const addReplyUseCase = new AddReplyUseCase({
@@ -64,6 +64,10 @@ describe('AddReplyUseCase', () => {
     expect(mockCommentRepository.verifyCommentExist).toBeCalledWith(
       useCasePayload.commentId,
     );
-    expect(mockReplyRepository.addReply).toBeCalledWith(mockNewReply);
+    expect(mockReplyRepository.addReply).toBeCalledWith(new NewReply({
+      commentId: useCasePayload.commentId,
+      content: useCasePayload.content,
+      owner: useCasePayload.owner,
+    }));
   });
 });

@@ -1,6 +1,4 @@
 const ReplyRepository = require('../../Domains/replies/ReplyRepository');
-const AddedReply = require('../../Domains/replies/entities/AddedReply');
-const ReplyDetails = require('../../Domains/replies/entities/ReplyDetails');
 
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
@@ -23,7 +21,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
     const result = await this._pool.query(query);
 
-    return new AddedReply({ ...result.rows[0] });
+    return result.rows[0];
   }
 
   async verifyReplyExist(replyId) {
@@ -69,14 +67,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
     const result = await this._pool.query(query);
 
-    return result.rows.map((reply) => {
-      const modifiedReply = { ...reply };
-      if (reply.is_deleted) {
-        modifiedReply.content = '**balasan telah dihapus**';
-      }
-      delete modifiedReply.is_deleted;
-      return new ReplyDetails(modifiedReply);
-    });
+    return result.rows;
   }
 }
 

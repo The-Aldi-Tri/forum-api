@@ -1,6 +1,4 @@
 const ThreadRepository = require('../../Domains/threads/ThreadRepository');
-const AddedThread = require('../../Domains/threads/entities/AddedThread');
-const ThreadDetails = require('../../Domains/threads/entities/ThreadDetails');
 
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 
@@ -22,7 +20,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
     const result = await this._pool.query(query);
 
-    return new AddedThread({ ...result.rows[0] });
+    return result.rows[0];
   }
 
   async verifyThreadExist(threadId) {
@@ -46,7 +44,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
     const result = await this._pool.query(query);
 
-    return new ThreadDetails(result.rows[0]);
+    return result.rows[0];
   }
 }
 

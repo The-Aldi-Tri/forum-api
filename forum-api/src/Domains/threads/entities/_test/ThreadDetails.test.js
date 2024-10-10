@@ -21,6 +21,7 @@ describe('a ThreadDetails entities', () => {
       body: true,
       date: 'now',
       username: 99,
+      comments: 'some comments',
     };
 
     // Action and Assert
@@ -37,11 +38,12 @@ describe('a ThreadDetails entities', () => {
       body: 'isi',
       date: new Date(),
       username: 'someone',
+      comments: [{ content: 'some comment' }],
     };
 
     // Action
     const {
-      id, title, body, date, username,
+      id, title, body, date, username, comments,
     } = new ThreadDetails(payload);
 
     // Assert
@@ -50,5 +52,6 @@ describe('a ThreadDetails entities', () => {
     expect(body).toEqual(payload.body);
     expect(date).toEqual(payload.date);
     expect(username).toEqual(payload.username);
+    expect(comments).toEqual(payload.comments);
   });
 });

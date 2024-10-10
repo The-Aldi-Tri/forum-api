@@ -5,7 +5,7 @@ const container = require('../src/Infrastructures/container');
 const UsersTableTestHelper = require('./UsersTableTestHelper');
 const AuthenticationsTableTestHelper = require('./AuthenticationsTableTestHelper');
 
-const CreateServerTestHelper = {
+const EndpointTestHelper = {
   async getAccessTokenAndUserIdHelper() {
     const server = await createServer(container);
     const randomNumber = Math.floor(Math.random() * 1000);
@@ -42,4 +42,4 @@ const CreateServerTestHelper = {
   },
 };
 
-module.exports = CreateServerTestHelper;
+module.exports = EndpointTestHelper;

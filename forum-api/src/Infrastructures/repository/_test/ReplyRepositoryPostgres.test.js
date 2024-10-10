@@ -1,9 +1,7 @@
 const pool = require('../../database/postgres/pool');
 
-const NewReply = require('../../../Domains/replies/entities/NewReply');
-const AddedReply = require('../../../Domains/replies/entities/AddedReply');
-const ReplyDetails = require('../../../Domains/replies/entities/ReplyDetails');
 const ReplyRepositoryPostgres = require('../ReplyRepositoryPostgres');
+const NewReply = require('../../../Domains/replies/entities/NewReply');
 
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
@@ -88,11 +86,11 @@ describe('ReplyRepositoryPostgres', () => {
 
       // Assert
       expect(addedReply).toStrictEqual(
-        new AddedReply({
+        {
           id: 'reply-123',
           content: 'isi reply',
           owner: 'user-123',
-        }),
+        },
       );
     });
   });
@@ -237,17 +235,18 @@ describe('ReplyRepositoryPostgres', () => {
 
       // Assert
       expect(replies).toHaveLength(2);
-      replies.map((reply) => expect(reply).toBeInstanceOf(ReplyDetails));
 
       expect(replies[0]).toHaveProperty('id', 'reply-123');
       expect(replies[0]).toHaveProperty('username', 'dicoding');
       expect(replies[0]).toHaveProperty('date');
       expect(replies[0]).toHaveProperty('content', 'isi reply 1');
+      expect(replies[0]).toHaveProperty('is_deleted', false);
 
       expect(replies[1]).toHaveProperty('id', 'reply-1234');
       expect(replies[1]).toHaveProperty('username', 'dicoding');
       expect(replies[1]).toHaveProperty('date');
-      expect(replies[1]).toHaveProperty('content', '**balasan telah dihapus**');
+      expect(replies[1]).toHaveProperty('content', 'isi reply 2');
+      expect(replies[1]).toHaveProperty('is_deleted', true);
 
       expect(replies[0].date.getTime()).toBeLessThanOrEqual(
         replies[1].date.getTime(),

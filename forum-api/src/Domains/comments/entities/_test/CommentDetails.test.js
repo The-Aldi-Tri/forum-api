@@ -20,6 +20,7 @@ describe('a CommentDetails entities', () => {
       username: 99,
       date: 'now',
       content: true,
+      replies: 'array',
     };
 
     // Action and Assert
@@ -35,11 +36,12 @@ describe('a CommentDetails entities', () => {
       username: 'someone',
       date: new Date(),
       content: 'isi',
+      replies: [{ content: 'something' }],
     };
 
     // Action
     const {
-      id, username, date, content,
+      id, username, date, content, replies,
     } = new CommentDetails(payload);
 
     // Assert
@@ -47,5 +49,6 @@ describe('a CommentDetails entities', () => {
     expect(username).toEqual(payload.username);
     expect(date).toEqual(payload.date);
     expect(content).toEqual(payload.content);
+    expect(replies).toEqual(payload.replies);
   });
 });

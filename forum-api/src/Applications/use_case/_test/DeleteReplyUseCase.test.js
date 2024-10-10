@@ -24,19 +24,19 @@ describe('DeleteReplyUseCase', () => {
     /** mocking needed function */
     mockThreadRepository.verifyThreadExist = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(1));
+      .mockImplementation(() => Promise.resolve());
 
     mockCommentRepository.verifyCommentExist = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(1));
+      .mockImplementation(() => Promise.resolve());
 
     mockReplyRepository.verifyReplyExist = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(1));
+      .mockImplementation(() => Promise.resolve());
 
     mockReplyRepository.verifyReplyOwner = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(1));
+      .mockImplementation(() => Promise.resolve());
 
     mockReplyRepository.deleteReplyById = jest
       .fn()

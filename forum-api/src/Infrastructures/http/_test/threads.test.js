@@ -47,6 +47,9 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.addedThread).toBeDefined();
+      expect(responseJson.data.addedThread).toHaveProperty('id');
+      expect(responseJson.data.addedThread).toHaveProperty('title');
+      expect(responseJson.data.addedThread).toHaveProperty('owner');
     });
 
     it('should response 400 when request payload not contain needed property', async () => {
@@ -150,6 +153,25 @@ describe('/threads endpoint', () => {
       expect(responseJson.data.thread).toHaveProperty('date');
       expect(responseJson.data.thread).toHaveProperty('username');
       expect(responseJson.data.thread).toHaveProperty('comments');
+
+      if (responseJson.data.thread.comments.length > 0) {
+        responseJson.data.thread.comments.forEach((comment) => {
+          expect(comment).toHaveProperty('id');
+          expect(comment).toHaveProperty('content');
+          expect(comment).toHaveProperty('date');
+          expect(comment).toHaveProperty('username');
+          expect(comment).toHaveProperty('replies');
+
+          if (comment.replies.length > 0) {
+            comment.replies.forEach((reply) => {
+              expect(reply).toHaveProperty('id');
+              expect(reply).toHaveProperty('content');
+              expect(reply).toHaveProperty('date');
+              expect(reply).toHaveProperty('username');
+            });
+          }
+        });
+      }
     });
 
     it('should response 404 when thread not found', async () => {

@@ -1,3 +1,4 @@
+const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const DeleteCommentUseCase = require('../DeleteCommentUseCase');
 
@@ -14,15 +15,22 @@ describe('DeleteCommentUseCase', () => {
     };
 
     /** creating dependency of use case */
+    const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
+    mockThreadRepository.verifyThreadExist = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+
     mockCommentRepository.verifyCommentExist = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(1));
+      .mockImplementation(() => Promise.resolve());
+
     mockCommentRepository.verifyCommentOwner = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(1));
+      .mockImplementation(() => Promise.resolve());
+
     mockCommentRepository.deleteCommentById = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
@@ -30,12 +38,16 @@ describe('DeleteCommentUseCase', () => {
     /** creating use case instance */
     const deleteCommentUseCase = new DeleteCommentUseCase({
       commentRepository: mockCommentRepository,
+      threadRepository: mockThreadRepository,
     });
 
     // Action
     await deleteCommentUseCase.execute(useCasePayload);
 
     // Assert
+    expect(mockThreadRepository.verifyThreadExist).toBeCalledWith(
+      useCasePayload.threadId,
+    );
     expect(mockCommentRepository.verifyCommentExist).toBeCalledWith(
       useCasePayload.commentId,
     );

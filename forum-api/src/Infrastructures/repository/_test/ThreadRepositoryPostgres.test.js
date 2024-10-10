@@ -1,8 +1,7 @@
 const pool = require('../../database/postgres/pool');
 
-const NewThread = require('../../../Domains/threads/entities/NewThread');
-const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
+const NewThread = require('../../../Domains/threads/entities/NewThread');
 
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
@@ -36,6 +35,7 @@ describe('ThreadRepositoryPostgres', () => {
         body: 'isi',
         owner: 'user-123',
       });
+
       const fakeIdGenerator = () => '123'; // stub!
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
@@ -57,6 +57,7 @@ describe('ThreadRepositoryPostgres', () => {
         body: 'isi',
         owner: 'user-123',
       });
+
       const fakeIdGenerator = () => '123'; // stub!
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
@@ -68,11 +69,11 @@ describe('ThreadRepositoryPostgres', () => {
 
       // Assert
       expect(addedThread).toStrictEqual(
-        new AddedThread({
+        {
           id: 'thread-123',
           title: 'judul',
           owner: 'user-123',
-        }),
+        },
       );
     });
   });
@@ -93,6 +94,7 @@ describe('ThreadRepositoryPostgres', () => {
         threadRepositoryPostgres.verifyThreadExist(threadId),
       ).rejects.toThrowError(NotFoundError);
     });
+
     it('should not throw NotFoundError when thread is exist', async () => {
       // Arrange
       await ThreadsTableTestHelper.addThread({

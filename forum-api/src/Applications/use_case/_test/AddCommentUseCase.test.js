@@ -23,21 +23,26 @@ describe('AddCommentUseCase', () => {
     });
 
     /** creating dependency of use case */
-    const mockCommentRepository = new CommentRepository();
     const mockThreadRepository = new ThreadRepository();
+    const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
-    mockCommentRepository.addComment = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(mockAddedComment));
     mockThreadRepository.verifyThreadExist = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(1));
+      .mockImplementation(() => Promise.resolve());
+
+    mockCommentRepository.addComment = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(new AddedComment({
+        id: 'comment-123',
+        content: useCasePayload.content,
+        owner: useCasePayload.owner,
+      })));
 
     /** creating use case instance */
     const addCommentUseCase = new AddCommentUseCase({
-      commentRepository: mockCommentRepository,
       threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
     });
 
     // Action

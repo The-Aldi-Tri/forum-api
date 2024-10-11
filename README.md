@@ -2,6 +2,107 @@
 
 Proyek ini adalah submission pertama pada course **Menjadi Back-End Developer Expert dengan JavaScript** pada learning path **Back-End Developer** di [Dicoding](dicoding.com).
 
+Hasil Submission:
+
+- Rating: &starf;&starf;&starf;&starf;&starf;
+- Saran:
+
+  - 1728375181045_create-table-threads.js
+
+    ```js
+    /* eslint-disable camelcase */
+
+    /*Hapus penggunaan disable linter yang tidak pernah digunakan.*/
+
+    exports.up = (pgm) => {
+      pgm.createTable('threads', {
+        id: {
+          type: 'VARCHAR(50)',
+          primaryKey: true,
+        },
+    ```
+
+  - GetThreadUseCase.js
+
+    ```js
+    const commentsWithReplies = await Promise.all(
+      /*
+      Kamu dapat membuat sebuah entity untuk melakukan mapping data sesuai dengan proses bisnis nya (misal untuk comment/reply ada perubahan konten jika data sudah dihapus), agar usecase jadi lebih rapi dan lebih sesuai dengan tanggung jawabnya sebagai orchestrator.
+      */
+
+      comments.map(async (comment) => {
+        const modifiedComment = { ...comment };
+        modifiedComment.content = modifiedComment.is_deleted
+          ? "**komentar telah dihapus**"
+          : modifiedComment.content;
+        delete modifiedComment.is_deleted;
+
+        const replies = await this._replyRepository.getRepliesByCommentId(
+          comment.id
+        );
+        const modifiedReplies = replies.map((reply) => {
+          const modifiedReply = { ...reply };
+          modifiedReply.content = modifiedReply.is_deleted
+            ? "**balasan telah dihapus**"
+            : modifiedReply.content;
+          delete modifiedReply.is_deleted;
+          return new ReplyDetails(modifiedReply);
+        });
+
+        modifiedComment.replies = modifiedReplies;
+        return new CommentDetails(modifiedComment);
+      })
+    );
+    ```
+
+  - AddThreadUseCase.test.js
+
+    ```js
+    mockThreadRepository.addThread = jest
+
+    /*
+    Untuk melakukan mock implementasi dari fungsi, sebenarnya bisa dilakukan langsung dengan cara seperti ini:
+
+    mockThreadRepository.addThread = jest.fn(() => Promise.resolve(
+      {
+        id: 'thread-123',
+        title: useCasePayload.title,
+        owner: useCasePayload.owner,
+      }
+    ))
+    */
+
+    mockThreadRepository.addThread = jest.fn(() => Promise.resolve(
+    {
+            id: 'thread-123',
+            title: useCasePayload.title,
+            owner: useCasePayload.owner,
+    }
+    ));
+          .fn()
+          .mockImplementation(() => Promise.resolve({
+            id: 'thread-123',
+            title: useCasePayload.title,
+            owner: useCasePayload.owner,
+          }));
+    ```
+
+  - ThreadRepositoryPostgres.test.js
+
+    ```js
+    // Assert
+    expect(thread).toHaveProperty("id", "thread-123");
+    expect(thread).toHaveProperty("title", "judul");
+    expect(thread).toHaveProperty("body", "isi");
+    expect(thread).toHaveProperty("date");
+
+    /*
+    Untuk lebih memudahkan assert field date, kamu dapat memodifikasi fungsi test helper tambah data untuk dapat melewatkan nilai ke kolom date untuk data yang akan ditambahkan dengan menggunakan nilai dari parameter, dan disini kamu dapat membandingkan nilai date dari kembalian fungsi under test dengan nilai date yang kamu lewatkan untuk menambahkan data melalui test helper.
+    */
+
+    expect(thread).toHaveProperty("username", "dicoding");
+    ```
+
 ## Studi Kasus Forum API
 
 Garuda Game (perusahaan fiktif) merupakan sebuah perusahaan paling sukses dalam menjalankan bisnis di bidang online game. Perusahaan tersebut memiliki ratusan game yang dimainkan oleh jutaan pengguna di seluruh dunia. Salah satu kunci keberhasilan Garuda Game adalah dekat dengan para pemainnya. Mereka berhasil membangun komunitas yang aktif.

@@ -40,11 +40,11 @@ describe('AddReplyUseCase', () => {
 
     mockReplyRepository.addReply = jest
       .fn()
-      .mockImplementation(() => Promise.resolve(new AddedReply({
+      .mockImplementation(() => Promise.resolve({
         id: 'comment-123',
         content: useCasePayload.content,
         owner: useCasePayload.owner,
-      })));
+      }));
 
     /** creating use case instance */
     const addReplyUseCase = new AddReplyUseCase({
@@ -57,7 +57,6 @@ describe('AddReplyUseCase', () => {
     const addedReply = await addReplyUseCase.execute(useCasePayload);
 
     // Assert
-    expect(addedReply).toStrictEqual(mockAddedReply);
     expect(mockThreadRepository.verifyThreadExist).toBeCalledWith(
       useCasePayload.threadId,
     );
@@ -69,5 +68,6 @@ describe('AddReplyUseCase', () => {
       content: useCasePayload.content,
       owner: useCasePayload.owner,
     }));
+    expect(addedReply).toStrictEqual(mockAddedReply);
   });
 });

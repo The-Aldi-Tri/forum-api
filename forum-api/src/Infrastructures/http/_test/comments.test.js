@@ -58,8 +58,8 @@ describe('/threads/{threadId}/comments endpoint', () => {
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.addedComment).toBeDefined();
       expect(responseJson.data.addedComment).toHaveProperty('id');
-      expect(responseJson.data.addedComment).toHaveProperty('content');
-      expect(responseJson.data.addedComment).toHaveProperty('owner');
+      expect(responseJson.data.addedComment).toHaveProperty('content', requestPayload.content);
+      expect(responseJson.data.addedComment).toHaveProperty('owner', userId);
     });
 
     it('should response 400 when request payload not contain needed property', async () => {

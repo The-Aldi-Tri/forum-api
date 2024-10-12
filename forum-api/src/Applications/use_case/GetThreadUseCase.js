@@ -21,23 +21,12 @@ class GetThreadUseCaseUseCase {
     );
 
     const commentsWithReplies = await Promise.all(
-      comments
-        .map(async (comment) => {
-          const modifiedComment = { ...comment };
-          modifiedComment.content = modifiedComment.is_deleted ? '**komentar telah dihapus**' : modifiedComment.content;
-          delete modifiedComment.is_deleted;
+      comments.map(async (comment) => {
+        const replies = await this._replyRepository.getRepliesByCommentId(comment.id);
+        const formattedReplies = replies.map((reply) => new ReplyDetails(reply));
 
-          const replies = await this._replyRepository.getRepliesByCommentId(comment.id);
-          const modifiedReplies = replies.map((reply) => {
-            const modifiedReply = { ...reply };
-            modifiedReply.content = modifiedReply.is_deleted ? '**balasan telah dihapus**' : modifiedReply.content;
-            delete modifiedReply.is_deleted;
-            return new ReplyDetails(modifiedReply);
-          });
-
-          modifiedComment.replies = modifiedReplies;
-          return new CommentDetails(modifiedComment);
-        }),
+        return new CommentDetails({ ...comment, replies: formattedReplies });
+      }),
     );
 
     return new ThreadDetails({ ...thread, comments: commentsWithReplies });

@@ -21,6 +21,7 @@ describe('a CommentDetails entities', () => {
       date: 'now',
       content: true,
       replies: 'array',
+      is_deleted: 'no',
     };
 
     // Action and Assert
@@ -31,24 +32,44 @@ describe('a CommentDetails entities', () => {
 
   it('should create commentDetails object correctly', () => {
     // Arrange
-    const payload = {
+    const payload1 = {
       id: 'comment-123',
       username: 'someone',
       date: new Date(),
       content: 'isi',
       replies: [{ content: 'something' }],
+      is_deleted: false,
+    };
+
+    const payload2 = {
+      id: 'comment-1234',
+      username: 'someone',
+      date: new Date(),
+      content: 'isi 2',
+      replies: [{ content: 'something2' }],
+      is_deleted: true,
     };
 
     // Action
     const {
-      id, username, date, content, replies,
-    } = new CommentDetails(payload);
+      id: id1, username: username1, date: date1, content: content1, replies: replies1,
+    } = new CommentDetails({ ...payload1 });
+
+    const {
+      id: id2, username: username2, date: date2, content: content2, replies: replies2,
+    } = new CommentDetails({ ...payload2 });
 
     // Assert
-    expect(id).toEqual(payload.id);
-    expect(username).toEqual(payload.username);
-    expect(date).toEqual(payload.date);
-    expect(content).toEqual(payload.content);
-    expect(replies).toEqual(payload.replies);
+    expect(id1).toEqual(payload1.id);
+    expect(username1).toEqual(payload1.username);
+    expect(date1).toEqual(payload1.date);
+    expect(content1).toEqual(payload1.content);
+    expect(replies1).toEqual(payload1.replies);
+
+    expect(id2).toEqual(payload2.id);
+    expect(username2).toEqual(payload2.username);
+    expect(date2).toEqual(payload2.date);
+    expect(content2).toEqual('**komentar telah dihapus**');
+    expect(replies2).toEqual(payload2.replies);
   });
 });

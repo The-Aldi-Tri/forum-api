@@ -20,6 +20,7 @@ describe('a ReplyDetails entities', () => {
       content: true,
       date: 'now',
       username: 99,
+      is_deleted: 'yes',
     };
 
     // Action and Assert
@@ -30,22 +31,41 @@ describe('a ReplyDetails entities', () => {
 
   it('should create replyDetails object correctly', () => {
     // Arrange
-    const payload = {
+    const payload1 = {
       id: 'reply-123',
       content: 'isi reply',
       date: new Date(),
       username: 'someone',
+      is_deleted: false,
+    };
+
+    const payload2 = {
+      id: 'reply-1234',
+      content: 'isi reply 2',
+      date: new Date(),
+      username: 'someone',
+      is_deleted: true,
     };
 
     // Action
     const {
-      id, username, date, content,
-    } = new ReplyDetails(payload);
+      id: id1, username: username1, date: date1, content: content1,
+    } = new ReplyDetails(payload1);
+
+    const {
+      id: id2, username: username2, date: date2, content: content2,
+    } = new ReplyDetails(payload2);
 
     // Assert
-    expect(id).toEqual(payload.id);
-    expect(username).toEqual(payload.username);
-    expect(date).toEqual(payload.date);
-    expect(content).toEqual(payload.content);
+    expect(id1).toEqual(payload1.id);
+    expect(username1).toEqual(payload1.username);
+    expect(date1).toEqual(payload1.date);
+    expect(content1).toEqual(payload1.content);
+
+    // Assert
+    expect(id2).toEqual(payload2.id);
+    expect(username2).toEqual(payload2.username);
+    expect(date2).toEqual(payload2.date);
+    expect(content2).toEqual('**balasan telah dihapus**');
   });
 });

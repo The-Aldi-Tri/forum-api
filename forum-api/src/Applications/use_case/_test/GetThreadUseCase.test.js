@@ -22,12 +22,10 @@ describe('GetThreadUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.verifyThreadExist = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
 
     mockThreadRepository.getThreadById = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve({
+      .fn(() => Promise.resolve({
         id: 'thread-123',
         title: 'sebuah thread',
         body: 'sebuah body thread',
@@ -36,8 +34,7 @@ describe('GetThreadUseCase', () => {
       }));
 
     mockCommentRepository.getCommentsByThreadId = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve([
+      .fn(() => Promise.resolve([
         {
           id: 'comment-123',
           username: 'johndoe',
@@ -55,8 +52,7 @@ describe('GetThreadUseCase', () => {
       ]));
 
     mockReplyRepository.getRepliesByCommentId = jest
-      .fn()
-      .mockImplementation((commentId) => {
+      .fn((commentId) => {
         if (commentId === 'comment-123') {
           return Promise.resolve([
             {
@@ -110,18 +106,21 @@ describe('GetThreadUseCase', () => {
                 username: 'johndoe',
                 date: new Date('2021-08-08T07:22:33.555Z'),
                 content: 'sebuah comment',
+                is_deleted: false,
                 replies: [
                   new ReplyDetails({
                     id: 'reply-123',
-                    content: '**balasan telah dihapus**',
+                    content: 'some racist reply',
                     date: new Date('2021-08-08T07:59:48.766Z'),
                     username: 'johndoe',
+                    is_deleted: true,
                   }),
                   new ReplyDetails({
                     id: 'reply-234',
                     content: 'sebuah balasan',
                     date: new Date('2021-08-08T08:07:01.522Z'),
                     username: 'dicoding',
+                    is_deleted: false,
                   }),
                 ],
               }),
@@ -129,7 +128,8 @@ describe('GetThreadUseCase', () => {
                 id: 'comment-234',
                 username: 'dicoding',
                 date: new Date('2021-08-08T07:26:21.338Z'),
-                content: '**komentar telah dihapus**',
+                content: 'some racist comment',
+                is_deleted: true,
                 replies: [],
               }),
             ],

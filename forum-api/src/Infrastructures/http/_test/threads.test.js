@@ -3,7 +3,10 @@ const container = require('../../container');
 const createServer = require('../createServer');
 
 const EndpointTestHelper = require('../../../../tests/EndpointTestHelper');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
+const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
 
 describe('/threads endpoint', () => {
   let accessToken;
@@ -48,8 +51,8 @@ describe('/threads endpoint', () => {
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.addedThread).toBeDefined();
       expect(responseJson.data.addedThread).toHaveProperty('id');
-      expect(responseJson.data.addedThread).toHaveProperty('title');
-      expect(responseJson.data.addedThread).toHaveProperty('owner');
+      expect(responseJson.data.addedThread).toHaveProperty('title', requestPayload.title);
+      expect(responseJson.data.addedThread).toHaveProperty('owner', userId);
     });
 
     it('should response 400 when request payload not contain needed property', async () => {
@@ -126,20 +129,112 @@ describe('/threads endpoint', () => {
   describe('when GET /threads/{threadId}', () => {
     it('should response 200 when request valid', async () => {
       // Arrange
-      const threadId = 'thread-123';
-      await ThreadsTableTestHelper.addThread({
-        id: threadId,
+      const userData1 = {
+        id: 'user-1',
+        username: 'username1',
+        password: 'secret',
+        fullname: 'full name 1',
+      };
+      await UsersTableTestHelper.addUser(userData1);
+
+      const userData2 = {
+        id: 'user-2',
+        username: 'username2',
+        password: 'secret',
+        fullname: 'full name 2',
+      };
+      await UsersTableTestHelper.addUser(userData2);
+
+      const threadData = {
+        id: 'thread-123',
         title: 'judul',
         body: 'isi',
-        owner: userId,
-      });
+        owner: userData1.id,
+        date: new Date('2024-10-01'),
+      };
+      await ThreadsTableTestHelper.addThread(threadData);
+
+      const commentData1 = {
+        id: 'comment-1',
+        threadId: threadData.id,
+        content: 'komentar 1',
+        date: new Date('2024-10-02'),
+        owner: userData1.id,
+      };
+      await CommentsTableTestHelper.addComment(commentData1);
+
+      const commentData2 = {
+        id: 'comment-2',
+        threadId: threadData.id,
+        content: 'komentar 2',
+        date: new Date('2024-10-03'),
+        owner: userData2.id,
+        isDeleted: true,
+      };
+      await CommentsTableTestHelper.addComment(commentData2);
+
+      const replyData1 = {
+        id: 'reply-1',
+        commentId: commentData1.id,
+        content: 'balasan 1',
+        date: new Date('2024-10-04'),
+        owner: userData1.id,
+      };
+      await RepliesTableTestHelper.addReply(replyData1);
+
+      const replyData2 = {
+        id: 'reply-2',
+        commentId: commentData1.id,
+        content: 'balasan 2',
+        date: new Date('2024-10-04'),
+        owner: userData2.id,
+        isDeleted: true,
+      };
+      await RepliesTableTestHelper.addReply(replyData2);
+
+      const expectedThread = {
+        id: threadData.id,
+        title: threadData.title,
+        body: threadData.body,
+        date: threadData.date.toISOString(),
+        username: userData1.username,
+        comments: [
+          {
+            id: commentData1.id,
+            content: commentData1.content,
+            date: commentData1.date.toISOString(),
+            username: userData1.username,
+            replies: [
+              {
+                id: replyData1.id,
+                content: replyData1.content,
+                date: replyData1.date.toISOString(),
+                username: userData1.username,
+              },
+              {
+                id: replyData2.id,
+                content: '**balasan telah dihapus**',
+                date: replyData2.date.toISOString(),
+                username: userData2.username,
+              },
+            ],
+          },
+          {
+            id: commentData2.id,
+            content: '**komentar telah dihapus**',
+            date: commentData2.date.toISOString(),
+            username: userData2.username,
+            replies: [],
+          },
+        ],
+      };
 
       const server = await createServer(container);
 
       // Action
       const response = await server.inject({
         method: 'GET',
-        url: `/threads/${threadId}`,
+        url: `/threads/${threadData.id}`,
       });
 
       // Assert
@@ -147,31 +242,7 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.thread).toBeDefined();
-      expect(responseJson.data.thread).toHaveProperty('id');
-      expect(responseJson.data.thread).toHaveProperty('title');
-      expect(responseJson.data.thread).toHaveProperty('body');
-      expect(responseJson.data.thread).toHaveProperty('date');
-      expect(responseJson.data.thread).toHaveProperty('username');
-      expect(responseJson.data.thread).toHaveProperty('comments');
-
-      if (responseJson.data.thread.comments.length > 0) {
-        responseJson.data.thread.comments.forEach((comment) => {
-          expect(comment).toHaveProperty('id');
-          expect(comment).toHaveProperty('content');
-          expect(comment).toHaveProperty('date');
-          expect(comment).toHaveProperty('username');
-          expect(comment).toHaveProperty('replies');
-
-          if (comment.replies.length > 0) {
-            comment.replies.forEach((reply) => {
-              expect(reply).toHaveProperty('id');
-              expect(reply).toHaveProperty('content');
-              expect(reply).toHaveProperty('date');
-              expect(reply).toHaveProperty('username');
-            });
-          }
-        });
-      }
+      expect(responseJson.data.thread).toStrictEqual(expectedThread);
     });
 
     it('should response 404 when thread not found', async () => {

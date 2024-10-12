@@ -201,18 +201,25 @@ describe('CommentRepositoryPostgres', () => {
   describe('getCommentsByThreadId function', () => {
     it('should return comments correctly', async () => {
       // Arrange
+      const commentDate1 = new Date();
       await CommentsTableTestHelper.addComment({
         id: 'comment-123',
         thread_id: 'thread-123',
         content: 'isi komen 1',
         owner: 'user-123',
+        date: commentDate1,
       });
 
+      // Add a delay
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const commentDate2 = new Date();
       await CommentsTableTestHelper.addComment({
         id: 'comment-1234',
         thread_id: 'thread-123',
         content: 'isi komen 2',
         owner: 'user-123',
+        date: commentDate2,
       });
 
       await CommentsTableTestHelper.markDeleted('comment-1234');
@@ -233,13 +240,13 @@ describe('CommentRepositoryPostgres', () => {
 
       expect(comments[0]).toHaveProperty('id', 'comment-123');
       expect(comments[0]).toHaveProperty('username', 'dicoding');
-      expect(comments[0]).toHaveProperty('date');
+      expect(comments[0]).toHaveProperty('date', commentDate1);
       expect(comments[0]).toHaveProperty('content', 'isi komen 1');
       expect(comments[0]).toHaveProperty('is_deleted', false);
 
       expect(comments[1]).toHaveProperty('id', 'comment-1234');
       expect(comments[1]).toHaveProperty('username', 'dicoding');
-      expect(comments[1]).toHaveProperty('date');
+      expect(comments[1]).toHaveProperty('date', commentDate2);
       expect(comments[1]).toHaveProperty('content', 'isi komen 2');
       expect(comments[1]).toHaveProperty('is_deleted', true);
 

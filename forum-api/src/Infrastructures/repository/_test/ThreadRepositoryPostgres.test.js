@@ -120,11 +120,13 @@ describe('ThreadRepositoryPostgres', () => {
   describe('getThreadById function', () => {
     it('should return thread correctly', async () => {
       // Arrange
+      const threadDate = new Date();
       await ThreadsTableTestHelper.addThread({
         id: 'thread-123',
         title: 'judul',
         body: 'isi',
         owner: 'user-123',
+        date: threadDate,
       });
 
       const fakeIdGenerator = () => '123'; // stub!
@@ -140,7 +142,7 @@ describe('ThreadRepositoryPostgres', () => {
       expect(thread).toHaveProperty('id', 'thread-123');
       expect(thread).toHaveProperty('title', 'judul');
       expect(thread).toHaveProperty('body', 'isi');
-      expect(thread).toHaveProperty('date');
+      expect(thread).toHaveProperty('date', threadDate);
       expect(thread).toHaveProperty('username', 'dicoding');
     });
   });

@@ -23,24 +23,19 @@ describe('DeleteReplyUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.verifyThreadExist = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
 
     mockCommentRepository.verifyCommentExist = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
 
     mockReplyRepository.verifyReplyExist = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
 
     mockReplyRepository.verifyReplyOwner = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
 
     mockReplyRepository.deleteReplyById = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
 
     /** creating use case instance */
     const deleteReplyUseCase = new DeleteReplyUseCase({

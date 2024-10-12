@@ -206,18 +206,25 @@ describe('ReplyRepositoryPostgres', () => {
   describe('getRepliesByCommentId function', () => {
     it('should return replies correctly', async () => {
       // Arrange
+      const replyDate1 = new Date();
       await RepliesTableTestHelper.addReply({
         id: 'reply-123',
         comment_id: 'comment-123',
         content: 'isi reply 1',
         owner: 'user-123',
+        date: replyDate1,
       });
 
+      // Add a delay
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const replyDate2 = new Date();
       await RepliesTableTestHelper.addReply({
         id: 'reply-1234',
         comment_id: 'comment-123',
         content: 'isi reply 2',
         owner: 'user-123',
+        date: replyDate2,
       });
 
       await RepliesTableTestHelper.markDeleted('reply-1234');
@@ -238,13 +245,13 @@ describe('ReplyRepositoryPostgres', () => {
 
       expect(replies[0]).toHaveProperty('id', 'reply-123');
       expect(replies[0]).toHaveProperty('username', 'dicoding');
-      expect(replies[0]).toHaveProperty('date');
+      expect(replies[0]).toHaveProperty('date', replyDate1);
       expect(replies[0]).toHaveProperty('content', 'isi reply 1');
       expect(replies[0]).toHaveProperty('is_deleted', false);
 
       expect(replies[1]).toHaveProperty('id', 'reply-1234');
       expect(replies[1]).toHaveProperty('username', 'dicoding');
-      expect(replies[1]).toHaveProperty('date');
+      expect(replies[1]).toHaveProperty('date', replyDate2);
       expect(replies[1]).toHaveProperty('content', 'isi reply 2');
       expect(replies[1]).toHaveProperty('is_deleted', true);
 

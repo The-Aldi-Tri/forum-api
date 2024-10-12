@@ -28,12 +28,10 @@ describe('AddCommentUseCase', () => {
 
     /** mocking needed function */
     mockThreadRepository.verifyThreadExist = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+      .fn(() => Promise.resolve());
 
     mockCommentRepository.addComment = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve({
+      .fn(() => Promise.resolve({
         id: 'comment-123',
         content: useCasePayload.content,
         owner: useCasePayload.owner,

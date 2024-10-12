@@ -4,7 +4,7 @@ class CommentDetails {
 
     const {
       id, username, date, content, replies,
-    } = payload;
+    } = this._formatPayload(payload);
 
     this.id = id;
     this.username = username;
@@ -14,9 +14,9 @@ class CommentDetails {
   }
 
   _verifyPayload({
-    id, username, date, content, replies,
+    id, username, date, content, replies, is_deleted: isDeleted,
   }) {
-    if (!id || !username || !date || !content || !replies) {
+    if (!id || !username || !date || !content || !replies || isDeleted === undefined) {
       throw new Error('COMMENT_DETAILS.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
@@ -27,10 +27,23 @@ class CommentDetails {
       || typeof content !== 'string'
       || !(Array.isArray(replies)
       && replies.every((reply) => typeof reply === 'object' && reply !== null))
+      || typeof isDeleted !== 'boolean'
       // replies must be array of object(s) and not null since typeof null also returns 'object'
     ) {
       throw new Error('COMMENT_DETAILS.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
+  }
+
+  _formatPayload({
+    id, username, date, content, replies, is_deleted: isDeleted,
+  }) {
+    return {
+      id,
+      username,
+      date,
+      content: isDeleted ? '**komentar telah dihapus**' : content,
+      replies,
+    };
   }
 }
 
